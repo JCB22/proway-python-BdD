@@ -11,7 +11,7 @@ class Pagamento:
     def __init__(self, valor):
         self._valor = valor
 
-    # Com a Exceção na classe mão, forçamos as classes filhas a terem suas próprias funções pagar
+    # Com a Exceção na classe mãe, forçamos as classes filhas a terem suas próprias funções pagar
     def pagar(self):
         raise NotImplementedError("Você deve implementar este método!")
 
