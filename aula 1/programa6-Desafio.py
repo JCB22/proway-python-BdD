@@ -26,7 +26,7 @@ class Container:
             if i == item:
                 self._espaco += item.tamanho
                 print(f"{item.nome} retirado do(a) {self.nome}")
-                self._itens.pop(n)
+                del self._itens[n]
                 break
             n += 1
 
