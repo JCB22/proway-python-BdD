@@ -24,8 +24,11 @@ CREATE TABLE IF NOT EXISTS tb_users(
 """
 "bitch"
 
+# Model associativa para a relação N:N entre as models Post e Tag
 posts_tags = Table(
-
+    "tb_posts_tags", Base.metadata,
+    Column("post_id", Integer, ForeignKey("tb_posts.id"), primary_key=True),
+    Column("tag_id", Integer, ForeignKey("tb_tags.id"), primary_key=True)
 )
 
 class User(Base):
@@ -80,6 +83,7 @@ class Post(Base):
         return f'<Post ({self.id}, Title{self.title} {self.content})>'
 
     user = relationship('User', back_populates='post', uselist=True)
+    tags = relationship("Tag", back_populates="posts", secondary=posts_tags)
 
     __str__ = __repr__
 
@@ -89,7 +93,8 @@ class Tag(Base):
     __tablename__ = 'tb_tags'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    id_post = Column(Integer, ForeignKey('tb_posts.id'), nullable=False)
-    name = Column(String(50), nullable=False)
+    name = Column(String(100), nullable=False)
 
-    posts = relationship('Post', back_populates='tag', secondary=posts_tags)
+    # Como a relação é N:N, precisamos referenciar o objeto Table que servirá como tabela associativa
+    # Pra isso, utilizamos o argumento secondary
+    posts = relationship('Post', back_populates='tags', secondary=posts_tags)

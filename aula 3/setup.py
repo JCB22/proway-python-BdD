@@ -3,8 +3,12 @@ from models import User, UserProfile, Post
 
 if __name__ == '__main__':
 
+    # Cria as tabelas definidas no módulo models.py
     Base.metadata.create_all(engine)
 
+    # O método all() trás todos os registros da tabela mapeada para a model passada
+    # como argumento de query(). No exemplo abaixo, é a model User.
+    # SELECT * FROM tb_users
     result = session.query(User).all()
 
     print(f'Quantidade de registros na tabela tb_users: {len(result)}')
@@ -17,12 +21,13 @@ if __name__ == '__main__':
     ]
 
     posts = [
-        {'id': '1', 'title': 'my girlfriend hates me after she got me with her best friend',
-         'content': 'I(M|32), and my girlfrend(F|29) blahblahblah'}
+        {"user_id": 1, "title": "A linguagem Python", "content": "Python é muito legal."},
+        {"user_id": 1, "title": "A linguagem C++", "content": "C++ é muito poderoso."},
+        {"user_id": 2, "title": "Docker", "content": "Docker é uma mão na roda."},
     ]
 
     if len(result) == 0:
-        for user_info in users:
+        for index, user_info in enumerate(users):
 
             user = User(email=user_info.get('email'), password=user_info.get('password'))
 
@@ -38,17 +43,28 @@ if __name__ == '__main__':
             session.add(user_profile)
             session.commit()
 
+            user_profile = UserProfile(
+                id=user.id,
+                first_name=user_info.get("first_name"),
+                last_name=user_info.get("last_name")
+            )
+
+            session.add(user_profile)
+            session.commit()
+
             for post_data in posts:
 
                 if post_data.get('id') == user.id:
-                    user.post.apppend(Post(
+                    post = Post(
                         title=post_data.get('title'),
                         content=post_data.get('content')
-                    ))
+                    )
 
-                user.posts.append(post_data)
-                session.add(user)
-                session.commit()
+                    # O objeto do tipo Post está sendo salvo na tabela de maneira indireta, pois ele foi adicionado
+                    # a lista de posts do objeto user que faz referência a model Post
+                    user.posts.append(post)
+                    session.add(user)
+                    session.commit()
 
     elif len(result) > 0:
         users = session.query(User).all()
