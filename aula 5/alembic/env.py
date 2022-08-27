@@ -1,12 +1,14 @@
 from logging.config import fileConfig
-import os
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+import os
 
-from dotenv import load_dotenv
+from database import Base
+
+from models import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -19,10 +21,9 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-# from myapp import mymo///del
+# from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 
-from database import Base
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -34,10 +35,11 @@ config = context.config
 
 section = config.config_ini_section
 config.set_section_option(section, 'DATABASE_USER', os.getenv('DATABASE_USER'))
-config.set_section_option(section,'DATABASE_PASSWORD', os.getenv('DATABASE_PASSWORD'))
-config.set_section_option(section,'DATABASE_HOST', os.getenv('DATABASE_HOST'))
-config.set_section_option(section,'DATABASE_PORT', os.getenv('DATABASE_PORT'))
-config.set_section_option(section,'DATABASE_NAME', os.getenv('DATABASE_NAME'))
+config.set_section_option(section, 'DATABASE_PASSWORD', os.getenv('DATABASE_PASSWORD'))
+config.set_section_option(section, 'DATABASE_HOST', os.getenv('DATABASE_HOST'))
+config.set_section_option(section, 'DATABASE_PORT', os.getenv('DATABASE_PORT'))
+config.set_section_option(section, 'DATABASE_NAME', os.getenv('DATABASE_NAME'))
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -61,6 +63,7 @@ def run_migrations_offline() -> None:
 
     with context.begin_transaction():
         context.run_migrations()
+
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode.
